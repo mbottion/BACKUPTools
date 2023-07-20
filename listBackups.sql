@@ -29,7 +29,7 @@ define files="case when '&2' is null then 'NO' else upper('&2') end"
 column tag             format a35
 column backup_type     format a20
 column Status          format a3
-column info            format a120
+column info            format a150
 column start_time      format a20
 column completion_time format a20
 column mb_in           format a15
@@ -170,6 +170,16 @@ SELECT
   || 'In MB: ' || rpad(ltrim(TO_CHAR( mb_in,'999G999G990D99' )),16)
   || 'Out MB: ' || rpad(ltrim(TO_CHAR( mb_out,'999G999G990D99' )),16)
   || 'MB/sec: ' || rpad(ltrim(TO_CHAR( mb_sec,'999G990D99' )),11)
+  || 'Duration: ' || rpad(
+                          regexp_replace(
+                                         ltrim(
+                                               numtodsinterval((completion_time-start_time),'DAY')
+                                              )
+                                        ,'^\+0* ([0-9:]*)\.[0-9]*$'
+                                        ,'\1'
+                                        )
+                         ,15
+                         )
   || '' info
  ,start_time
  ,completion_time
