@@ -1,4 +1,5 @@
 set serveroutput on
+set verify off
 begin
   if (upper('&1') in ('USAGE','HELP','-?','-H'))
   then
@@ -45,7 +46,7 @@ WITH backups AS (
    ,s.status
    ,MIN( s.start_time ) start_time
    ,MAX( s.completion_time ) completion_time
-   ,round( ( SUM( s.output_bytes ) / 1024 / 1024 ) / ( ( MAX( s.completion_time ) - MIN( s.start_time ) ) * 86400 ),1 ) mb_sec
+   ,round( ( SUM( s.output_bytes ) / 1024 / 1024 ) / ( (( MAX( s.completion_time ) - MIN( s.start_time ) ) * 86400 )+1),1 ) mb_sec
    ,f.tag
    ,f2.max_bs_key bs_key
   FROM
